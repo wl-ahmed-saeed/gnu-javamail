@@ -1,5 +1,5 @@
 # GNU Java Mail (Jakarta Edition)
-his repository modules are based on modules provided by Classpath Extensions Softwar [(classpathx)](https://savannah.gnu.org/svn/?group=classpathx), which is part of the GNU Savannah Project. The project has been migrated from Javax Mail to Jakarta Mail for modern Java EE compatibility.
+This repository modules are based on modules provided by Classpath Extensions Softwar [(classpathx)](https://savannah.gnu.org/svn/?group=classpathx), which is part of the GNU Savannah Project. The project has been migrated from Javax Mail to Jakarta Mail for modern Java EE compatibility.
 
 # Packages
 There are two main packages that provide JavaMail API functionality:
