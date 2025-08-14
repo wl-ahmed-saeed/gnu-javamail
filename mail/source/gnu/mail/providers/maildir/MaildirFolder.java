@@ -33,17 +33,17 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.FolderNotFoundException;
-import javax.mail.IllegalWriteException;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Store;
-import javax.mail.URLName;
-import javax.mail.event.ConnectionEvent;
-import javax.mail.event.FolderEvent;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.FolderNotFoundException;
+import jakarta.mail.IllegalWriteException;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Store;
+import jakarta.mail.URLName;
+import jakarta.mail.event.ConnectionEvent;
+import jakarta.mail.event.FolderEvent;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * The folder class implementing a Maildir-format mailbox.

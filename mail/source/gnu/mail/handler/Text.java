@@ -22,19 +22,19 @@
 
 package gnu.mail.handler;
 
-import java.awt.datatransfer.DataFlavor;
+
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import javax.activation.ActivationDataFlavor;
-import javax.activation.DataContentHandler;
-import javax.activation.DataSource;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.MimeUtility;
-import javax.mail.internet.ParseException;
+import jakarta.activation.ActivationDataFlavor;
+import jakarta.activation.DataContentHandler;
+import jakarta.activation.DataSource;
+import jakarta.mail.internet.ContentType;
+import jakarta.mail.internet.MimeUtility;
+import jakarta.mail.internet.ParseException;
 
 /**
  * A JAF data content handler for the text/* family of MIME content types.
@@ -50,7 +50,7 @@ public abstract class Text
    * Our favorite data flavor.
    * Yum yum.
    */
-  protected DataFlavor flavor;
+  protected ActivationDataFlavor flavor;
 
   /**
    * Constructor specifying the data flavor.
@@ -68,9 +68,9 @@ public abstract class Text
    * can be provided in.
    * @return the DataFlavors
    */
-  public DataFlavor[] getTransferDataFlavors()
+  public ActivationDataFlavor[] getTransferDataFlavors()
   {
-    DataFlavor[] flavors = new DataFlavor[1];
+    ActivationDataFlavor[] flavors = new ActivationDataFlavor[1];
     flavors[0] = flavor;
     return flavors;
   }
@@ -83,13 +83,13 @@ public abstract class Text
    * @param source the data source representing the data to be converted
    * @return the constructed object
    */
-  public Object getTransferData(DataFlavor flavor, DataSource source)
-    throws UnsupportedFlavorException, IOException
-  {
-    if (this.flavor.equals(flavor))
-      return getContent(source);
-    return null;
+public Object getTransferData(ActivationDataFlavor flavor, DataSource source)
+    throws IOException {
+  if (this.flavor.equals(flavor)) {
+    return getContent(source);
   }
+  throw new IOException("Unsupported flavor: " + flavor);
+}
 
   /**
    * Return an object representing the data in its most preferred form.

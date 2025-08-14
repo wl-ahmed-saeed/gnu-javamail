@@ -26,11 +26,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 
-import javax.mail.FetchProfile;
-import javax.mail.Flags;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.FetchProfile;
+import jakarta.mail.Flags;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * A JavaMail MIME message delegate for an NNTP article.

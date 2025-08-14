@@ -30,16 +30,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.FetchProfile;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.FolderNotFoundException;
-import javax.mail.IllegalWriteException;
-import javax.mail.Message;
-import javax.mail.MessageRemovedException;
-import javax.mail.MessagingException;
-import javax.mail.MethodNotSupportedException;
-import javax.mail.event.ConnectionEvent;
+import jakarta.mail.FetchProfile;
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.FolderNotFoundException;
+import jakarta.mail.IllegalWriteException;
+import jakarta.mail.Message;
+import jakarta.mail.MessageRemovedException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.MethodNotSupportedException;
+import jakarta.mail.event.ConnectionEvent;
 
 import gnu.inet.nntp.ArticleResponse;
 import gnu.inet.nntp.GroupResponse;

@@ -23,11 +23,11 @@
 package gnu.mail.providers.imap;
 
 import java.util.List;
-import javax.mail.BodyPart;
-import javax.mail.MessagingException;
-import javax.mail.MultipartDataSource;
-import javax.mail.internet.MimePart;
-import javax.mail.internet.MimePartDataSource;
+import jakarta.mail.BodyPart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.MultipartDataSource;
+import jakarta.mail.internet.MimePart;
+import jakarta.mail.internet.MimePartDataSource;
 
 import gnu.inet.imap.BODYSTRUCTURE;
 

@@ -26,15 +26,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.mail.FetchProfile;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.IllegalWriteException;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Store;
-import javax.mail.UIDFolder;
-import javax.mail.event.ConnectionEvent;
+import jakarta.mail.FetchProfile;
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.IllegalWriteException;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Store;
+import jakarta.mail.UIDFolder;
+import jakarta.mail.event.ConnectionEvent;
 
 import gnu.inet.pop3.POP3Connection;
 

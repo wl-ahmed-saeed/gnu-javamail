@@ -23,13 +23,13 @@
 package gnu.mail.providers;
 
 import java.io.InputStream;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.IllegalWriteException;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.IllegalWriteException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * Abstract read-only message.

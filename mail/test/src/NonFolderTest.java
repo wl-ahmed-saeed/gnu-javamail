@@ -1,15 +1,15 @@
-import javax.mail.Flags;
-import javax.mail.Message;
-import javax.mail.Folder;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.URLName;
-import javax.mail.event.FolderEvent;
-import javax.mail.event.FolderListener;
-import javax.mail.event.MessageCountEvent;
-import javax.mail.event.MessageCountListener;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Flags;
+import jakarta.mail.Message;
+import jakarta.mail.Folder;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Store;
+import jakarta.mail.URLName;
+import jakarta.mail.event.FolderEvent;
+import jakarta.mail.event.FolderListener;
+import jakarta.mail.event.MessageCountEvent;
+import jakarta.mail.event.MessageCountListener;
+import jakarta.mail.internet.MimeMessage;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
