@@ -29,6 +29,12 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
   <property name="gnumail-version" value="1.1.2-jakarta"/>
   <property name="providers-version" value="1.1.2.1-jakarta"/>
+  
+  <!-- Disable protocols except mbox and maildir -->
+  <property name="disable-smtp" value="true"/>
+  <property name="disable-imap" value="true"/>
+  <property name="disable-pop3" value="true"/>
+  <property name="disable-nntp" value="true"/>
 
   <!-- Locations -->
   <property name='src' location='source'/>
@@ -188,7 +194,6 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
         <include name='mailcap'/>
         <include name='mime.types'/>
         <include name='javamail.charset.map'/>
-        <include name='javamail.default.providers'/>
       </metainf>
       <!-- Remove Jakarta Mail classes to prevent conflicts with WildFly -->
       <!-- <include name='jakarta/mail/**/*.class'/> -->
