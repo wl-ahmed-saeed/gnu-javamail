@@ -1326,6 +1326,31 @@ public class IMAPFolder
     return uidvalidity;
   }
 
+  public long getUIDNext()
+    throws MessagingException
+  {
+    // If folder is open, return the cached value from SELECT/EXAMINE command
+    if (isOpen())
+      {
+        return uidnext;
+      }
+    
+    // If folder is closed, use STATUS command to retrieve the value
+    IMAPConnection connection = ((IMAPStore) store).connection;
+    try
+      {
+        List<String> items = new ArrayList<String>();
+        items.add(IMAPConstants.UIDNEXT);
+        connection.status(path, items, callback);
+      }
+    catch (IOException e)
+      {
+        throw new MessagingException("Cannot obtain UIDNext", e);
+      }
+    
+    return uidnext;
+  }
+
   public Message getMessageByUID(long uid)
     throws MessagingException
   {
