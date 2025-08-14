@@ -40,6 +40,7 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     
   <!-- Override these for your own locations -->
   <property name='activation.jar' location='../jakarta.activation-api-2.1.3.jar'/>
+  <property name='jakarta.mail.jar' location='../jakarta.mail-api-2.1.3.jar'/>
   <property name='inetlib.jar' location='../inetlib-1.1.2.1.jar'/>
     
   <property name='META-INF' location='${dst}/META-INF'/>
@@ -47,15 +48,17 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   <property name='mailcap' location='${META-INF}/mailcap'/>
   <property name='mime.types' location='${META-INF}/mime.types'/>
   <property name='providers' location='${META-INF}/javamail.providers'/>
+  <property name='default-providers' location='${META-INF}/javamail.default.providers'/>
   <property name='address.map' location='${META-INF}/javamail.address.map'/>
   <property name='charset.map' location='${META-INF}/javamail.charset.map'/>
   <property name='manifest' location='MANIFEST.MF'/>
+  <property name='default-providers-source' location='javamail.default.providers'/>
   
   <property name='install-dir' location='/usr/share/java'/>
 
   <path id='mail.classpath'>
-    <pathelement path='${src}'/>
     <pathelement path='${activation.jar}'/>
+    <pathelement path='${jakarta.mail.jar}'/>
     <pathelement path='${inetlib.jar}'/>
   </path>
   
@@ -67,6 +70,7 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   <!-- Targets -->
   <target name='preinit'>
     <available file='${activation.jar}' property='activation.available'/>
+    <available file='${jakarta.mail.jar}' property='jakarta.mail.available'/>
     <available file='${inetlib.jar}' property='inetlib.available'/>
   </target>
 
@@ -74,11 +78,15 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     <fail message='Can&apos;t find ${activation.jar} - see INSTALL'/>
   </target>
 
+  <target name='jakarta.mail.jar.unavailable' depends='preinit' unless='jakarta.mail.available'>
+    <fail message='Can&apos;t find ${jakarta.mail.jar} - see INSTALL'/>
+  </target>
+
   <target name='inetlib.jar.unavailable' depends='preinit' unless='inetlib.available'>
     <fail message='Can&apos;t find ${inetlib.jar} - see INSTALL'/>
   </target>
 
-  <target name='init' depends='preinit,activation.jar.unavailable,inetlib.jar.unavailable'>
+  <target name='init' depends='preinit,activation.jar.unavailable,jakarta.mail.jar.unavailable,inetlib.jar.unavailable'>
     <echo>WARNING: compilation using Ant is not supported, see the file INSTALL for details</echo>
     <tstamp/>
     <mkdir dir='${dst}'/>
@@ -89,10 +97,15 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   <target name='gnumail' depends='init'>
     <javac srcdir='${src}' destdir='${dst}' debug='true'>
       <classpath refid='mail.classpath'/>
-      <include name='jakarta/mail/**/*.java'/>
+      <!-- Remove Jakarta Mail classes compilation to prevent conflicts with WildFly -->
+      <!-- <include name='jakarta/mail/**/*.java'/> -->
       <include name='gnu/mail/util/*.java'/>
       <include name='gnu/mail/handler/*.java'/>
     </javac>
+    <!-- Copy only GNU Mail properties files -->
+    <copy todir='${dst}'>
+      <fileset dir='${src}' includes='gnu/**/*.properties'/>
+    </copy>
   </target>
 
   <target name='providers' depends='gnumail.jar'>
@@ -107,6 +120,10 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
       <include name='gnu/mail/providers/mbox/*.java' unless='disable-mbox'/>
       <include name='gnu/mail/providers/maildir/*.java' unless='disable-maildir'/>
     </javac>
+    <!-- Copy only GNU Mail properties files -->
+    <copy todir='${dst}'>
+      <fileset dir='${src}' includes='gnu/**/*.properties'/>
+    </copy>
   </target>
 
   <target name='javamail.address.map' depends='init'>
@@ -161,6 +178,7 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     <copy file='mailcap' tofile='${mailcap}'/>
     <copy file='mime.types' tofile='${mime.types}'/>
     <copy file='javamail.charset.map' tofile='${charset.map}'/>
+    <copy file='${default-providers-source}' tofile='${default-providers}'/>
   </target>
 
   <target name='gnumail.jar' depends='gnumail,meta-inf' description='Build the GNU Javamail JAR file'>
@@ -170,9 +188,11 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
         <include name='mailcap'/>
         <include name='mime.types'/>
         <include name='javamail.charset.map'/>
+        <include name='javamail.default.providers'/>
       </metainf>
-      <include name='jakarta/mail/**/*.class'/>
-      <include name='jakarta/mail/**/*.properties'/>
+      <!-- Remove Jakarta Mail classes to prevent conflicts with WildFly -->
+      <!-- <include name='jakarta/mail/**/*.class'/> -->
+      <!-- <include name='jakarta/mail/**/*.properties'/> -->
       <include name='gnu/mail/util/*.class'/>
       <include name='gnu/mail/handler/*.class'/>
       <include name='gnu/mail/**/*.properties'/>
@@ -185,6 +205,7 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
         <include name='COPYING'/>
         <include name='javamail.providers'/>
         <include name='javamail.address.map'/>
+        <include name='javamail.default.providers'/>
       </metainf>
       <include name='gnu/mail/treeutil/*.class'/>
       <include name='gnu/mail/providers/*.class'/>
@@ -194,7 +215,9 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
       <include name='gnu/mail/providers/nntp/*.class' unless='disable-nntp'/>
       <include name='gnu/mail/providers/mbox/*.class' unless='disable-mbox'/>
       <include name='gnu/mail/providers/maildir/*.class' unless='disable-maildir'/>
+      <!-- Ensure all properties files are included -->
       <include name='gnu/mail/providers/**/*.properties'/>
+      <include name='gnu/mail/treeutil/*.properties'/>
     </jar>
   </target>
 
@@ -224,10 +247,6 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
       <bottom><![CDATA[&copy;]]> Copyright 2003, 2004
             The Free Software Foundation, All rights reserved</bottom>
       <packageset dir='${src}'>
-        <include name='jakarta/mail'/>
-        <include name='jakarta/mail/event'/>
-        <include name='jakarta/mail/internet'/>
-        <include name='jakarta/mail/search'/>
         <include name='gnu/mail/providers/smtp'/>
         <include name='gnu/mail/providers/imap'/>
         <include name='gnu/mail/providers/pop3'/>
