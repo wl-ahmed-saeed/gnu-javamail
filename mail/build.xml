@@ -76,7 +76,7 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   </target>
   
   <!-- Override these for your own locations -->
-  <property name='inetlib.jar' location='../inetlib-1.1.2.1.jar'/>
+  <property name='inetlib.jar' location='../inetlib/inetlib-1.1.2.1.jar'/>
     
   <property name='META-INF' location='${dst}/META-INF'/>
   <property name='COPYING' location='${META-INF}/COPYING'/>
