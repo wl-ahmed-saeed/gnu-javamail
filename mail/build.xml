@@ -52,8 +52,8 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
              uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
   </target>
 
-  <property name="gnumail-version" value="1.1.2-jakarta"/>
-  <property name="providers-version" value="1.1.2.1-jakarta"/>
+  <property name="gnumail-version" value="1.1.2"/>
+  <property name="providers-version" value="1.1.2"/>
   
   <!-- Disable protocols except mbox and maildir -->
   <property name="disable-smtp" value="true"/>
@@ -66,8 +66,8 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   <property name='dst' location='classes'/>
   <property name='doc' location='docs'/>
     
-  <property name='gnumail.jar' location='gnumail-${gnumail-version}.jar'/>
-  <property name='providers.jar' location='gnumail-providers-${providers-version}.jar'/>
+  <property name='gnumail.jar' location='gnu-mail-jakarta-${gnumail-version}.jar'/>
+  <property name='providers.jar' location='gnu-mail-providers-jakarta-${providers-version}.jar'/>
     
   <!-- Ivy dependencies -->
   <target name="resolve-dependencies" depends="init-ivy" description="Resolve dependencies with Ivy">
