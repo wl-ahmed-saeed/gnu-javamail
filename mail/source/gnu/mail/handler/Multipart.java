@@ -22,16 +22,16 @@
 
 package gnu.mail.handler;
 
-import java.awt.datatransfer.DataFlavor;
+
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.activation.ActivationDataFlavor;
-import javax.activation.DataContentHandler;
-import javax.activation.DataSource;
-import javax.activation.UnsupportedDataTypeException;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMultipart;
+import jakarta.activation.ActivationDataFlavor;
+import jakarta.activation.DataContentHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.UnsupportedDataTypeException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMultipart;
 
 /**
  * A JAF data content handler for the multipart/* family of MIME content
@@ -47,7 +47,7 @@ public class Multipart
   /**
    * Our favorite data flavor.
    */
-  protected DataFlavor flavor;
+  protected ActivationDataFlavor flavor;
 
   /**
    * Generic constructor.
@@ -64,7 +64,7 @@ public class Multipart
    */
   public Multipart(String mimeType, String description)
   {
-    flavor = new ActivationDataFlavor(javax.mail.internet.MimeMultipart.class,
+    flavor = new ActivationDataFlavor(jakarta.mail.internet.MimeMultipart.class,
         mimeType, description);
   }
 
@@ -73,9 +73,9 @@ public class Multipart
    * can be provided in.
    * @return the DataFlavors
    */
-  public DataFlavor[] getTransferDataFlavors()
+  public ActivationDataFlavor[] getTransferDataFlavors()
   {
-    DataFlavor[] flavors = new DataFlavor[1];
+    ActivationDataFlavor[] flavors = new ActivationDataFlavor[1];
     flavors[0] = flavor;
     return flavors;
   }
@@ -88,13 +88,15 @@ public class Multipart
    * @param source the data source representing the data to be converted
    * @return the constructed object
    */
-  public Object getTransferData(DataFlavor flavor, DataSource source)
-    throws UnsupportedFlavorException, IOException
-  {
-    if (this.flavor.equals(flavor))
-      return getContent(source);
-    return null;
+
+public Object getTransferData(ActivationDataFlavor flavor, DataSource source)
+    throws IOException {
+  if (this.flavor.equals(flavor)) {
+    return getContent(source);
   }
+  throw new IOException("Unsupported flavor: " + flavor);
+}
+
 
   /**
    * Return an object representing the data in its most preferred form.

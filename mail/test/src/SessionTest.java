@@ -1,8 +1,8 @@
-import javax.mail.NoSuchProviderException;
-import javax.mail.Provider;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.Transport;
+import jakarta.mail.NoSuchProviderException;
+import jakarta.mail.Provider;
+import jakarta.mail.Session;
+import jakarta.mail.Store;
+import jakarta.mail.Transport;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -26,11 +26,11 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import javax.activation.DataHandler;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.IllegalWriteException;
-import javax.mail.MessagingException;
+import jakarta.activation.DataHandler;
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.IllegalWriteException;
+import jakarta.mail.MessagingException;
 
 import gnu.inet.pop3.POP3Connection;
 import gnu.mail.providers.ReadOnlyMessage;

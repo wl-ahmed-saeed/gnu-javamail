@@ -26,11 +26,11 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.IllegalWriteException;
-import javax.mail.Message;
-import javax.mail.MessagingException;
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.IllegalWriteException;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
 
 import gnu.inet.nntp.Group;
 import gnu.inet.nntp.GroupIterator;

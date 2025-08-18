@@ -28,9 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.activation.ActivationDataFlavor;
-import javax.activation.DataContentHandler;
-import javax.activation.DataSource;
+import jakarta.activation.ActivationDataFlavor;
+import jakarta.activation.DataContentHandler;
+import jakarta.activation.DataSource;
 
 /**
  * A JAF data content handler for the application/* family of MIME content
@@ -46,7 +46,7 @@ public abstract class Application
   /**
    * Our favorite data flavor.
    */
-  protected DataFlavor flavor;
+  protected ActivationDataFlavor flavor;
 
   /**
    * Constructor specifying the data flavor.
@@ -64,9 +64,9 @@ public abstract class Application
    * can be provided in.
    * @return the DataFlavors
    */
-  public DataFlavor[] getTransferDataFlavors()
+  public ActivationDataFlavor[] getTransferDataFlavors()
   {
-    DataFlavor[] flavors = new DataFlavor[1];
+    ActivationDataFlavor[] flavors = new ActivationDataFlavor[1];
     flavors[0] = flavor;
     return flavors;
   }
@@ -79,13 +79,14 @@ public abstract class Application
    * @param source the data source representing the data to be converted
    * @return the constructed object
    */
-  public Object getTransferData(DataFlavor flavor, DataSource source)
-    throws UnsupportedFlavorException, IOException
-  {
-    if (this.flavor.equals(flavor))
-      return getContent(source);
-    return null;
+public Object getTransferData(ActivationDataFlavor flavor, DataSource source)
+    throws IOException {
+  if (this.flavor.equals(flavor)) {
+    return getContent(source);
   }
+  throw new IOException("Unsupported flavor: " + flavor);
+}
+
 
   /**
    * Return an object representing the data in its most preferred form.

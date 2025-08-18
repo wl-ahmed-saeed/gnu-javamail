@@ -33,40 +33,40 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import javax.mail.Address;
-import javax.mail.FetchProfile;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.FolderClosedException;
-import javax.mail.FolderNotFoundException;
-import javax.mail.IllegalWriteException;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.MethodNotSupportedException;
-import javax.mail.Store;
-import javax.mail.UIDFolder;
-import javax.mail.event.ConnectionEvent;
-import javax.mail.event.FolderEvent;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Address;
+import jakarta.mail.FetchProfile;
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.FolderClosedException;
+import jakarta.mail.FolderNotFoundException;
+import jakarta.mail.IllegalWriteException;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.MethodNotSupportedException;
+import jakarta.mail.Store;
+import jakarta.mail.UIDFolder;
+import jakarta.mail.event.ConnectionEvent;
+import jakarta.mail.event.FolderEvent;
+import jakarta.mail.internet.MimeMessage;
 
-import javax.mail.search.AddressTerm;
-import javax.mail.search.AndTerm;
-import javax.mail.search.BodyTerm;
-import javax.mail.search.ComparisonTerm;
-import javax.mail.search.DateTerm;
-import javax.mail.search.FlagTerm;
-import javax.mail.search.FromTerm;
-import javax.mail.search.HeaderTerm;
-import javax.mail.search.IntegerComparisonTerm;
-import javax.mail.search.MessageIDTerm;
-import javax.mail.search.NotTerm;
-import javax.mail.search.OrTerm;
-import javax.mail.search.RecipientTerm;
-import javax.mail.search.SearchTerm;
-import javax.mail.search.SentDateTerm;
-import javax.mail.search.SizeTerm;
-import javax.mail.search.StringTerm;
-import javax.mail.search.SubjectTerm;
+import jakarta.mail.search.AddressTerm;
+import jakarta.mail.search.AndTerm;
+import jakarta.mail.search.BodyTerm;
+import jakarta.mail.search.ComparisonTerm;
+import jakarta.mail.search.DateTerm;
+import jakarta.mail.search.FlagTerm;
+import jakarta.mail.search.FromTerm;
+import jakarta.mail.search.HeaderTerm;
+import jakarta.mail.search.IntegerComparisonTerm;
+import jakarta.mail.search.MessageIDTerm;
+import jakarta.mail.search.NotTerm;
+import jakarta.mail.search.OrTerm;
+import jakarta.mail.search.RecipientTerm;
+import jakarta.mail.search.SearchTerm;
+import jakarta.mail.search.SentDateTerm;
+import jakarta.mail.search.SizeTerm;
+import jakarta.mail.search.StringTerm;
+import jakarta.mail.search.SubjectTerm;
 
 import gnu.inet.imap.IMAPAdapter;
 import gnu.inet.imap.IMAPCallback;
@@ -1326,6 +1326,31 @@ public class IMAPFolder
     return uidvalidity;
   }
 
+  public long getUIDNext()
+    throws MessagingException
+  {
+    // If folder is open, return the cached value from SELECT/EXAMINE command
+    if (isOpen())
+      {
+        return uidnext;
+      }
+    
+    // If folder is closed, use STATUS command to retrieve the value
+    IMAPConnection connection = ((IMAPStore) store).connection;
+    try
+      {
+        List<String> items = new ArrayList<String>();
+        items.add(IMAPConstants.UIDNEXT);
+        connection.status(path, items, callback);
+      }
+    catch (IOException e)
+      {
+        throw new MessagingException("Cannot obtain UIDNext", e);
+      }
+    
+    return uidnext;
+  }
+
   public Message getMessageByUID(long uid)
     throws MessagingException
   {
@@ -1462,7 +1487,7 @@ public class IMAPFolder
 
   /**
    * Returns the number of unread messages in this folder.
-   * @see javax.mail.Folder#getUnreadMessageCount()
+   * @see jakarta.mail.Folder#getUnreadMessageCount()
    */
   public synchronized int getUnreadMessageCount()
     throws MessagingException
@@ -1472,7 +1497,7 @@ public class IMAPFolder
 
   /**
    * Returns the number of deleted messages in this folder.
-   * @see javax.mail.Folder#getDeletedMessageCount()
+   * @see jakarta.mail.Folder#getDeletedMessageCount()
    */
   public synchronized int getDeletedMessageCount()
     throws MessagingException

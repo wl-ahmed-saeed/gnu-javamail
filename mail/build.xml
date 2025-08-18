@@ -20,42 +20,79 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 02110-1301 USA.
 -->
 
-<project name='mail' default='dist'>
+<project name='mail' default='dist' xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <description>
   This file is provided in the event that you do not have GNU Make
   installed.
   </description>
+  
+  <!-- Ivy configuration -->
+  <property name="ivy.install.version" value="2.5.0" />
+  <condition property="ivy.home" value="${env.IVY_HOME}">
+    <isset property="env.IVY_HOME" />
+  </condition>
+  <property name="ivy.home" value="${user.home}/.ant" />
+  <property name="ivy.jar.dir" value="${ivy.home}/lib" />
+  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-${ivy.install.version}.jar" />
+  
+  <!-- Download Ivy if not present -->
+  <target name="download-ivy" unless="offline">
+    <mkdir dir="${ivy.jar.dir}"/>
+    <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" 
+         dest="${ivy.jar.file}" usetimestamp="true"/>
+  </target>
+  
+  <!-- Initialize Ivy -->
+  <target name="init-ivy" depends="download-ivy">
+    <path id="ivy.lib.path">
+      <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+    </path>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" 
+             uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+  </target>
 
   <property name="gnumail-version" value="1.1.2"/>
-  <property name="providers-version" value="1.1.2.1"/>
+  <property name="providers-version" value="1.1.2"/>
+  
+  <!-- Disable protocols except mbox and maildir -->
+  <property name="disable-smtp" value="true"/>
+  <property name="disable-imap" value="true"/>
+  <property name="disable-pop3" value="true"/>
+  <property name="disable-nntp" value="true"/>
 
   <!-- Locations -->
   <property name='src' location='source'/>
   <property name='dst' location='classes'/>
   <property name='doc' location='docs'/>
     
-  <property name='gnumail.jar' location='gnumail-${gnumail-version}.jar'/>
-  <property name='providers.jar' location='gnumail-providers-${providers-version}.jar'/>
+  <property name='gnumail.jar' location='gnu-mail-jakarta-${gnumail-version}.jar'/>
+  <property name='providers.jar' location='gnu-mail-providers-jakarta-${providers-version}.jar'/>
     
+  <!-- Ivy dependencies -->
+  <target name="resolve-dependencies" depends="init-ivy" description="Resolve dependencies with Ivy">
+    <ivy:resolve/>
+    <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" />
+  </target>
+  
   <!-- Override these for your own locations -->
-  <property name='activation.jar' location='../activation/activation.jar'/>
-  <property name='inetlib.jar' location='../inetlib/inetlib.jar'/>
+  <property name='inetlib.jar' location='../inetlib/inetlib-1.1.2.1.jar'/>
     
   <property name='META-INF' location='${dst}/META-INF'/>
   <property name='COPYING' location='${META-INF}/COPYING'/>
   <property name='mailcap' location='${META-INF}/mailcap'/>
   <property name='mime.types' location='${META-INF}/mime.types'/>
   <property name='providers' location='${META-INF}/javamail.providers'/>
+  <property name='default-providers' location='${META-INF}/javamail.default.providers'/>
   <property name='address.map' location='${META-INF}/javamail.address.map'/>
   <property name='charset.map' location='${META-INF}/javamail.charset.map'/>
   <property name='manifest' location='MANIFEST.MF'/>
+  <property name='default-providers-source' location='javamail.default.providers'/>
   
   <property name='install-dir' location='/usr/share/java'/>
 
   <path id='mail.classpath'>
-    <pathelement path='${src}'/>
-    <pathelement path='${activation.jar}'/>
+    <fileset dir="lib" includes="*.jar"/>
     <pathelement path='${inetlib.jar}'/>
   </path>
   
@@ -65,20 +102,15 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   </path>
 
   <!-- Targets -->
-  <target name='preinit'>
-    <available file='${activation.jar}' property='activation.available'/>
+  <target name='preinit' depends='resolve-dependencies'>
     <available file='${inetlib.jar}' property='inetlib.available'/>
-  </target>
-
-  <target name='activation.jar.unavailable' depends='preinit' unless='activation.available'>
-    <fail message='Can&apos;t find ${activation.jar} - see INSTALL'/>
   </target>
 
   <target name='inetlib.jar.unavailable' depends='preinit' unless='inetlib.available'>
     <fail message='Can&apos;t find ${inetlib.jar} - see INSTALL'/>
   </target>
 
-  <target name='init' depends='preinit,activation.jar.unavailable,inetlib.jar.unavailable'>
+  <target name='init' depends='preinit,inetlib.jar.unavailable'>
     <echo>WARNING: compilation using Ant is not supported, see the file INSTALL for details</echo>
     <tstamp/>
     <mkdir dir='${dst}'/>
@@ -89,10 +121,15 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   <target name='gnumail' depends='init'>
     <javac srcdir='${src}' destdir='${dst}' debug='true'>
       <classpath refid='mail.classpath'/>
-      <include name='javax/mail/**/*.java'/>
+      <!-- Remove Jakarta Mail classes compilation to prevent conflicts with WildFly -->
+      <!-- <include name='jakarta/mail/**/*.java'/> -->
       <include name='gnu/mail/util/*.java'/>
       <include name='gnu/mail/handler/*.java'/>
     </javac>
+    <!-- Copy only GNU Mail properties files -->
+    <copy todir='${dst}'>
+      <fileset dir='${src}' includes='gnu/**/*.properties'/>
+    </copy>
   </target>
 
   <target name='providers' depends='gnumail.jar'>
@@ -107,6 +144,10 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
       <include name='gnu/mail/providers/mbox/*.java' unless='disable-mbox'/>
       <include name='gnu/mail/providers/maildir/*.java' unless='disable-maildir'/>
     </javac>
+    <!-- Copy only GNU Mail properties files -->
+    <copy todir='${dst}'>
+      <fileset dir='${src}' includes='gnu/**/*.properties'/>
+    </copy>
   </target>
 
   <target name='javamail.address.map' depends='init'>
@@ -161,6 +202,7 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     <copy file='mailcap' tofile='${mailcap}'/>
     <copy file='mime.types' tofile='${mime.types}'/>
     <copy file='javamail.charset.map' tofile='${charset.map}'/>
+    <copy file='${default-providers-source}' tofile='${default-providers}'/>
   </target>
 
   <target name='gnumail.jar' depends='gnumail,meta-inf' description='Build the GNU Javamail JAR file'>
@@ -171,8 +213,9 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
         <include name='mime.types'/>
         <include name='javamail.charset.map'/>
       </metainf>
-      <include name='javax/mail/**/*.class'/>
-      <include name='javax/mail/**/*.properties'/>
+      <!-- Remove Jakarta Mail classes to prevent conflicts with WildFly -->
+      <!-- <include name='jakarta/mail/**/*.class'/> -->
+      <!-- <include name='jakarta/mail/**/*.properties'/> -->
       <include name='gnu/mail/util/*.class'/>
       <include name='gnu/mail/handler/*.class'/>
       <include name='gnu/mail/**/*.properties'/>
@@ -185,6 +228,7 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
         <include name='COPYING'/>
         <include name='javamail.providers'/>
         <include name='javamail.address.map'/>
+        <include name='javamail.default.providers'/>
       </metainf>
       <include name='gnu/mail/treeutil/*.class'/>
       <include name='gnu/mail/providers/*.class'/>
@@ -194,7 +238,9 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
       <include name='gnu/mail/providers/nntp/*.class' unless='disable-nntp'/>
       <include name='gnu/mail/providers/mbox/*.class' unless='disable-mbox'/>
       <include name='gnu/mail/providers/maildir/*.class' unless='disable-maildir'/>
+      <!-- Ensure all properties files are included -->
       <include name='gnu/mail/providers/**/*.properties'/>
+      <include name='gnu/mail/treeutil/*.properties'/>
     </jar>
   </target>
 
@@ -202,7 +248,6 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
   <!-- Installation -->
   <target name='install' depends='dist' description='Install the JAR files in ${install-dir}'>
-    <copy file='${activation.jar}' todir='${install-dir}'/>
     <copy file='${gnumail.jar}' todir='${install-dir}'/>
     <copy file='${providers.jar}' todir='${install-dir}'/>
   </target>
@@ -224,10 +269,6 @@ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
       <bottom><![CDATA[&copy;]]> Copyright 2003, 2004
             The Free Software Foundation, All rights reserved</bottom>
       <packageset dir='${src}'>
-        <include name='javax/mail'/>
-        <include name='javax/mail/event'/>
-        <include name='javax/mail/internet'/>
-        <include name='javax/mail/search'/>
         <include name='gnu/mail/providers/smtp'/>
         <include name='gnu/mail/providers/imap'/>
         <include name='gnu/mail/providers/pop3'/>

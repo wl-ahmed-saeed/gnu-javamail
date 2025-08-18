@@ -24,12 +24,12 @@ package gnu.mail.providers;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
-import javax.activation.DataHandler;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.IllegalWriteException;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimeBodyPart;
+import jakarta.activation.DataHandler;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.IllegalWriteException;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimeBodyPart;
 
 /**
  * A read-only MIME body part, suitable for subclassing in providers.
